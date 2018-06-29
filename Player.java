@@ -15,32 +15,34 @@ class Player {
     void removeCard(int index) {
         deck.remove(index);
     }
-    /*void removeCard(Card card) {
-        deck.remove(card);
-    }*/
     ArrayList<Card> getDeck() {
         return deck;
     }
-    void setDeck(Card card) {
+    void addDeckCard(Card card) {
         deck.add(card);
     }
     ArrayList<Card> getTable() {
         return table;
     }
-    void addCard(Card card) {
+    void addTableCard(Card card) {
         table.add(card);
-        calculateSum();
+        calculateTotal();
     }
-    int getLength() {
+    int getTableLength() {
         return table.size();
     }
-    int deckLenght(){
+    int getDeckLength(){
         return deck.size();
     }
-    int getSum() {
+    int getTotal() {
         return sum;
     }
-    private void calculateSum() {
+    void clear(){
+        sum = 0;
+        stop = false;
+        table.clear();
+    }
+    private void calculateTotal() {
         sum = 0;
         for (Card x : table)
             sum += x.getValue();

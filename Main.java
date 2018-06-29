@@ -1,5 +1,8 @@
-public class Main {
+public class main {
     public static void main(String[] args) {
-        Mechanisms.startGame();
+        Repository repo = new Repository();
+        Controller ctrl = new Controller(repo);
+        View gameFrame = new View(ctrl);
+        gameFrame.cardDeal(repo.player);
     }
 }
