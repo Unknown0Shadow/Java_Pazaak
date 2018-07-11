@@ -29,7 +29,7 @@ public class View {
     private JLabel scoreComputer;
     private JLabel playerName;
     private JLabel computerName;
-    private Icon cardIcons[] = new Icon[47];
+    private Icon cardIcons[] = new Icon[63];
     private Icon otherIcons[] = new Icon[6];
     private JButton[] playerTable = new JButton[9];
     private JButton[] computerTable = new JButton[9];
@@ -39,8 +39,10 @@ public class View {
     private JButton standButton;
     private ArrayList<JButton> computerCards = new ArrayList<>();
     private ArrayList<JButton> playerCards = new ArrayList<>();
+    private ArrayList <JButton> switchers = new ArrayList<>();
     private MouseAdapter mouseAdapter;
     private HandlerClass handler;
+    private SwitchHandler switchHandler;
     private Timer timer;
 
     /**
@@ -56,12 +58,10 @@ public class View {
             window.setContentPane(new JLabel(new ImageIcon(ImageIO.read(new File("Pictures/Board.bmp")))));
             int index = 0;
             BufferedImage a;
-            for (int row = 0; row < 8; row++) {
-                for (int column = 0; column < 6; column++) {
+            for (int row = 0; row < 9; row++) {
+                for (int column = 0; column < 7; column++) {
                     a = ImageIO.read(new File("Pictures/PazaakCards.png")).getSubimage(column * 90, row * 126, 90, 126);
                     cardIcons[index++] = new ImageIcon(a);
-                    if (index == 47)
-                        break; // the picture has a blank spot at the end
                 }
             }
             index = 0;
@@ -186,6 +186,33 @@ public class View {
             computerTable[k].setBorderPainted(false);
             window.add(playerTable[k]);
             window.add(computerTable[k]);
+        }
+        left_x = 16;
+        temp_y = 639;
+        int temp_id;
+        switchHandler = new SwitchHandler();
+        for (int k = 0; k < 8; k++){
+            switchers.add(new JButton());
+            switchers.get(k).setBounds(left_x,temp_y,35,35);
+            if(k > 0 && k % 2 == 1) {
+                left_x += 57;
+                if(ctrl.repo.player.getDeck().get(k/2).getId() == 36) {
+                    switchers.get(k).setIcon(otherIcons[1]);
+                    switchers.get(k).addActionListener(switchHandler);
+                }
+            }
+            else{
+                left_x += 43;
+                temp_id = ctrl.repo.player.getDeck().get(k/2).getId();
+                if(temp_id == 36 || (24 <= temp_id && temp_id <= 29)) {
+                    switchers.get(k).setIcon(otherIcons[0]);
+                    switchers.get(k).addActionListener(switchHandler);
+                }
+            }
+            window.add(switchers.get(k));
+            switchers.get(k).setContentAreaFilled(false);
+            switchers.get(k).setBorderPainted(false);
+            switchers.get(k).setFocusPainted(false);
         }
 
         turn[0] = new JButton();
@@ -316,15 +343,63 @@ public class View {
     private class HandlerClass implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             JButton source = (JButton) event.getSource();
-            ctrl.cardAction(ctrl.repo.player.getDeck().get(playerCards.indexOf(source)), ctrl.repo.player);
-            ctrl.repo.player.removeCard(playerCards.indexOf(source));
+            int index = playerCards.indexOf(source);
+            ctrl.cardAction(ctrl.repo.player.getDeck().get(index), ctrl.repo.player);
+            ctrl.repo.player.removeCard(index);
             playerCards.remove(source);
+            switchers.get(index*2).removeActionListener(switchHandler);
+            switchers.get(index*2+1).removeActionListener(switchHandler);
+            switchers.get(index*2).setIcon(null);
+            switchers.get(index*2+1).setIcon(null);
+            switchers.remove(index*2);
+            switchers.remove(index*2);
             source.setIcon(null);
             source.setEnabled(false);
             for (JButton button : playerCards) {
                 window.remove(button);
             }
             syncTable(ctrl.repo.player);
+        }
+    }
+
+    /**
+     * Handling switch click events
+     */
+    private class SwitchHandler implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            JButton source = (JButton) event.getSource();
+            int index = switchers.indexOf(source);
+            Card card = ctrl.repo.player.getDeck().get(index/2);
+            if(index % 2 == 0){
+                card.setValue(-card.getValue());
+                if(source.getIcon()==otherIcons[0]) {
+                    source.setIcon(otherIcons[3]);
+                    if(card.getId()!=36)
+                        playerCards.get(index/2).setIcon(cardIcons[card.getId()+6]);
+                }
+                else {
+                    source.setIcon(otherIcons[0]);
+                    if(card.getId()!=36)
+                        playerCards.get(index/2).setIcon(cardIcons[card.getId()]);
+                }
+            }
+            else{
+                if(card.getValue()==1) {
+                    card.setValue(2);
+                    source.setIcon(otherIcons[2]);
+                }
+                else if(card.getValue()==2){
+                    card.setValue(1);
+                    source.setIcon(otherIcons[1]);
+                }else if(card.getValue()== -1) {
+                    card.setValue(-2);
+                    source.setIcon(otherIcons[2]);
+                }
+                else if(card.getValue()== -2){
+                    card.setValue(-1);
+                    source.setIcon(otherIcons[1]);
+                }
+            }
         }
     }
 
@@ -337,23 +412,28 @@ public class View {
             card = player.getTable().get(k);
             if (player.getName().equals("Player")) {
                 scorePlayer.setText(String.format("%d", player.getTotal()));
-
-                if (((18 <= card.getId() && card.getId() <= 23) || card.getId() < 6) && card.getValue() < 0)
+                if(card.getId()==36){
+                    if(0<card.getValue())
+                        playerTable[k].setIcon(cardIcons[36+card.getValue()]);
+                    else playerTable[k].setIcon(cardIcons[36+Math.abs(card.getValue())+2]);
+                }
+                else if ((((24 <= card.getId() && card.getId() <= 29) || card.getId() < 6) && card.getValue() < 0)||(12<= card.getId() && card.getId() <= 17 && card.getValue()>0))
                     playerTable[k].setIcon(cardIcons[card.getId() + 6]);
-                else if(6<= card.getId() && card.getId() <= 11 && card.getValue()>0)
-                    playerTable[k].setIcon(cardIcons[card.getId()-6]);
-                else if (30 <= card.getId() && card.getId() <= 35 && card.getValue()<0)
+                else if (46 <= card.getId() && card.getId() <= 51 && card.getValue()<0)
                     playerTable[k].setIcon(cardIcons[card.getId()+10]);
                 else
                     playerTable[k].setIcon(cardIcons[card.getId()]);
             } else {
                 scoreComputer.setText(String.format("%d", player.getTotal()));
 
-                if (((18 <= card.getId() && card.getId() <= 23) || card.getId() < 6) && card.getValue() < 0)
+                if(card.getId()==36){
+                    if(0<card.getValue())
+                        computerTable[k].setIcon(cardIcons[36+card.getValue()]);
+                    else computerTable[k].setIcon(cardIcons[36+Math.abs(card.getValue())+2]);
+                }
+                else if ((((24 <= card.getId() && card.getId() <= 29) || card.getId() < 6) && card.getValue() < 0)||(12<= card.getId() && card.getId() <= 17 && card.getValue()>0))
                     computerTable[k].setIcon(cardIcons[card.getId() + 6]);
-                else if(6<= card.getId() && card.getId() <= 11 && card.getValue()>0)
-                    computerTable[k].setIcon(cardIcons[card.getId()-6]);
-                else if (30 <= card.getId() && card.getId() <= 35 && card.getValue()<0)
+                else if (46 <= card.getId() && card.getId() <= 51 && card.getValue()<0)
                     computerTable[k].setIcon(cardIcons[card.getId()+10]);
                 else
                     computerTable[k].setIcon(cardIcons[card.getId()]);
@@ -400,6 +480,8 @@ public class View {
         }
         ctrl.cardDeal(player);
         syncTable(player);
+        if (player.getTotal()==20)
+            player.stop = true;
     }
 
     /**

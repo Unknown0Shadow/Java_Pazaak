@@ -44,9 +44,9 @@ public class Controller {
      */
     private int cardValue(Card card, int max) {
         int value = 0;
-        if (card.getId() < 12)
+        if (card.getId() < 6 || (12<=card.getId() && card.getId()<=17))
             value = card.getValue();
-        else if (12 < card.getId() && card.getId() < 17) {
+        else if (42 <= card.getId() && card.getId() <= 45) {
             int temp1 = card.getValue() / 10;
             int temp2 = card.getValue() % 10;
             for (Card c : repo.computer.getTable()) {
@@ -54,13 +54,13 @@ public class Controller {
                     value += -c.getValue();
             }
             value *= 2;
-        } else if (17 < card.getId() && card.getId() < 24) {
+        } else if (24 < card.getId() && card.getId() < 29) {
             if (repo.computer.getTotal() > 20)
                 value = -card.getValue();
             else value = card.getValue();
-        } else if (card.getId() == 17)
+        } else if (card.getId() == 41)
             value = repo.computer.getTable().get(repo.computer.getTableLength() - 1).getValue();
-        else if (card.getId() == 12) {
+        else if (card.getId() == 36) {
             if (repo.player.stop) {
                 if (repo.player.getTotal() < repo.computer.getTotal() + 1)
                     value = 1;
@@ -88,7 +88,7 @@ public class Controller {
      * Actual functionality of the card
      */
     void cardAction(Card card, Player player) {
-        if (12 < card.getId() && card.getId() < 17) {
+        if (42 <= card.getId() && card.getId() <= 45) {
             int temp1 = card.getValue() / 10;
             int temp2 = card.getValue() % 10;
             for (Card c : player.getTable()) {
@@ -97,7 +97,7 @@ public class Controller {
                 }
             }
             card.setValue(0);
-        } else if (card.getId() == 17)
+        } else if (card.getId() == 41)
             card.setValue(player.getTable().get(player.getTableLength() - 1).getValue());
         player.addTableCard(card);
     }
@@ -156,7 +156,7 @@ public class Controller {
                         card = repo.computer.getDeck().get(k);
                         temp_value = computer_total + cardValue(card, 20);
                         if (temp_value > player_total && temp_value <= 20) {
-                            if (card.getId() < 13 || 16 < card.getId())
+                            if (card.getId() <= 41 || 46 <= card.getId())
                                 card.setValue(cardValue(card, 20));
                             actioned = true;
                             choice = k;
@@ -170,7 +170,7 @@ public class Controller {
                     for (int k = 0; k < repo.computer.getDeckLength(); k++) {
                         card = repo.computer.getDeck().get(k);
                         if (computer_total + cardValue(card, 20) == 20) {
-                            if (card.getId() < 13 || 16 < card.getId())
+                            if (card.getId() < 41 || 46 < card.getId())
                                 card.setValue(cardValue(card, 20));
                             actioned = true;
                             choice = k;
@@ -186,7 +186,7 @@ public class Controller {
                             card = repo.computer.getDeck().get(k);
                             temp_value = computer_total + cardValue(card, 19);
                             if (temp_value == 19) {
-                                if (card.getId() < 13 || 16 < card.getId())
+                                if (card.getId() < 41 || 46 < card.getId())
                                     card.setValue(cardValue(card, 19));
                                 actioned = true;
                                 choice = k;
@@ -203,7 +203,7 @@ public class Controller {
                             card = repo.computer.getDeck().get(k);
                             temp_value = computer_total + cardValue(card, 18);
                             if (temp_value == 18) {
-                                if (card.getId() < 13 || 16 < card.getId())
+                                if (card.getId() < 41 || 46 < card.getId())
                                     card.setValue(cardValue(card, 18));
                                 actioned = true;
                                 choice = k;
@@ -215,7 +215,7 @@ public class Controller {
                         for (int k = 0; k < repo.computer.getDeckLength(); k++) {
                             card = repo.computer.getDeck().get(k);
                             if (computer_total + cardValue(card, 20) <= 20) {
-                                if (card.getId() < 13 || 16 < card.getId())
+                                if (card.getId() < 41 || 46 < card.getId())
                                     card.setValue(cardValue(card, 20));
                                 actioned = true;
                                 choice = k;
@@ -226,7 +226,9 @@ public class Controller {
                 }
             }
             if (actioned && card.getValue() != 0) {
+                //repo.computer.addTableCard(card);
                 System.out.println(repo.computer.getTotal() + "||" + card.getValue() + " " + repo.computer.getName() + " usercard");
+                //repo.computer.removeCard(choice);
                 cardAction(repo.computer.getDeck().get(choice), repo.computer);
                 repo.computer.removeCard(choice);
                 computer_total = repo.computer.getTotal();
