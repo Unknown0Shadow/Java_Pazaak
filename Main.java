@@ -1,8 +1,12 @@
+import Controller.Controller;
+import Repository.Repository;
+import View.View;
+
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[]args){
         Repository repo = new Repository();
         Controller ctrl = new Controller(repo);
-        View gameFrame = new View(ctrl);
-        gameFrame.cardDeal(repo.player);
+        View view = new View(ctrl);
+        view.cardDeal(repo.player);
     }
 }
