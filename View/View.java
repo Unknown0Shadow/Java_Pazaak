@@ -467,12 +467,12 @@ public class View {
             pause(true);
             gamePaused("beat");
             game = false;
-            window.add(restartButton);
+            restartButton.addMouseListener(mouseAdapter);
         } else if(ctrl.repo.computer.score == 3 && game){
             pause(true);
             gamePaused("defeat");
             game = false;
-            window.add(restartButton);
+            restartButton.addMouseListener(mouseAdapter);
         } else{
             for(int k = 0; k < 9; k++){
                 playerTable[k].setIcon(null);
@@ -499,17 +499,17 @@ public class View {
      */
     private void pause(boolean condition){
         if(condition){
-            window.remove(endTurnButton);
-            window.remove(standButton);
-            window.remove(restartButton);
+            endTurnButton.removeMouseListener(mouseAdapter);
+            standButton.removeMouseListener(mouseAdapter);
+            restartButton.removeMouseListener(mouseAdapter);
             for(JButton button: playerCards)
                 window.remove(button);
             for(JButton button: switchers)
                 window.remove(button);
         } else{
-            window.add(endTurnButton);
-            window.add(standButton);
-            window.add(restartButton);
+            endTurnButton.addMouseListener(mouseAdapter);
+            standButton.addMouseListener(mouseAdapter);
+            restartButton.addMouseListener(mouseAdapter);
             endTurnButton.setForeground(LIGHT_BLUE);
             standButton.setForeground(LIGHT_BLUE);
             restartButton.setForeground(LIGHT_BLUE);
