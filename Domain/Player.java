@@ -13,9 +13,6 @@ public class Player{
     public String getName(){
         return name;
     }
-    public void removeCard(int index){
-        deck.remove(index);
-    }
     public ArrayList<Card> getDeck(){
         return deck;
     }

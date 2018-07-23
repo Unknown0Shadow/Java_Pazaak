@@ -1,7 +1,7 @@
 package Domain;
 public class Card{
     private int value, id;
-    public boolean avaliable = true;
+    public boolean available = true;
     public int getValue(){
         return value;
     }
