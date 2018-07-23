@@ -22,10 +22,11 @@ public class View {
     private Controller ctrl;
     private static final Color LIGHT_BLUE = new Color(35,158,218);
     private static final Color LIGHT_YELLOW = new Color(222,238,17);
-    private static final color DARK_BLUE = new Color(17,81,109);;
+    private static final Color DARK_BLUE = new Color(17,81,109);;
     private static final Font MY_FONT = new Font("YD2002",Font.BOLD,30);
     private static final Font MY_FONT_2 = new Font("YD2002",Font.BOLD,20);
-    private static Border BORDER_YELLOW, BORDER_BLACK;
+    private static final Border BORDER_YELLOW = BorderFactory.createLineBorder(LIGHT_YELLOW,5);
+    private static final Border BORDER_BLACK = BorderFactory.createLineBorder(Color.black,5);
     private JFrame window;
     private JLabel playerName, computerName, scorePlayer, scoreComputer, firstInfo, secondInfo;
     private Icon cardIcons[] = new Icon[63];
@@ -46,11 +47,6 @@ public class View {
     private Timer repeater;
     private boolean game = true;
     public View(Controller ctrl){
-        LIGHT_BLUE = new Color(colors[0][0], colors[0][1], colors[0][2]);
-        LIGHT_YELLOW = new Color(colors[1][0], colors[1][1], colors[1][2]);
-        DARK_BLUE = new Color(colors[2][0], colors[2][1], colors[2][2]);
-        BORDER_YELLOW = BorderFactory.createLineBorder(LIGHT_YELLOW,5);
-        BORDER_BLACK = BorderFactory.createLineBorder(Color.black,5);
         this.ctrl = ctrl;
         window = new JFrame();
         try{
