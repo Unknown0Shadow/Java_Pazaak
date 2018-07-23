@@ -45,7 +45,7 @@ public class View {
     private SwitchHandler switchHandler = new SwitchHandler();
     private Timer repeater;
     private boolean game = true;
-    public View(Controller ctrl, int[][]colors){
+    public View(Controller ctrl){
         LIGHT_BLUE = new Color(colors[0][0], colors[0][1], colors[0][2]);
         LIGHT_YELLOW = new Color(colors[1][0], colors[1][1], colors[1][2]);
         DARK_BLUE = new Color(colors[2][0], colors[2][1], colors[2][2]);
