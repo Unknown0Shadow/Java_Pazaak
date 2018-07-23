@@ -88,7 +88,7 @@ public class Controller{
                 if(Math.abs(c.getValue()) == temp1 || Math.abs(c.getValue()) == temp2)
                     c.setValue(-c.getValue());
             } card.setValue(0);
-        } else if(card.getId() == 41  && repo.computer.getTableLength() != 0)
+        } else if(card.getId() == 41  && player.getTableLength() != 0)
             card.setValue(player.getTable().get(player.getTableLength() - 1).getValue());
         player.addTableCard(card);
     }
