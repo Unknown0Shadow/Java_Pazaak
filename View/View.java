@@ -250,7 +250,7 @@ public class View {
                                 }
                             } if(!ctrl.repo.player.stop){
                                 cardDeal(ctrl.repo.player);
-                                if(ctrl.repo.player.getTotal() == 20){
+                                if(ctrl.repo.player.getTotal() == 20 || ctrl.repo.player.getTableLength() == 9){
                                     ctrl.repo.player.stop = true;
                                     repeater.start();
                                 } else pause(false);
